@@ -18,27 +18,21 @@ Feel free to chat with us about GodotSteam on the [CoaguCo Discord server](https
 
 Current Build
 ---
-You can [download pre-compiled versions _(currently v4.1)_ of this repo here](https://github.com/CoaguCo-Industries/GodotSteam-Server/releases).
+You can [download pre-compiled versions of this repo here](https://github.com/CoaguCo-Industries/GodotSteam-Server/releases).
 
-**Version 4.2 Changes**
-- Added: new Remote Storage enum to WorkshopFileType
-- Added: two new UGC enums to ItemState and ItemPreviewType
-- Added: new Remote Play enum, form factor for VR headset
-- Added: two new result enums; not supported and family size limit exceeded
-- Added: three new enums to NetworkingConfigValue
-- Added: new general constant ACCOUNT_ID_INVALID
-- Changed: k_ESteamNetworkingConfig_SDRClient_DebugTicketAddress was replaced by k_ESteamNetworkingConfig_SDRClient_DevTicket, value is the same but reference changed
+**Version 3.3 Changes**
+-
 
 [You can read more change-logs here](https://godotsteam.com/changelog/server4/).
 
 Compatibility
 ---
-While rare, sometimes Steamworks SDK updates will break compatilibity with older GodotSteam versions. Any compatability breaks are noted below.
+While rare, sometimes Steamworks SDK updates will break compatilibity with older GodotSteam versions. Any compatability breaks are noted below. API files (dll, so, dylib) _should_ still work for older version.
 
-Steamworks SDK Version | GodotSteam Version | Notes
+Steamworks SDK Version | GodotSteam Version
 ---|---|---
-1.59 or newer | 4.2 or newer | API files (dll, so, dylib) will still work for older
-1.58a or older | 4.1 or older |
+1.59 or newer | 4.2 or newer
+1.58a or older | 4.1 or older
 
 Known Issues
 ---
@@ -53,7 +47,7 @@ Alternatively, you can just [download the pre-compiled versions in our Releases 
 
 Donate
 ---
-Pull-requests are the best way to help the project out but you can also donate through [Github Sponsors](https://github.com/sponsors/Gramps), [Ko-Fi](https://ko-fi.com/grampsgarcia), or [Paypal](https://www.paypal.me/sithlordkyle)!
+Pull-requests are the best way to help the project out but you can also donate through [Github Sponsors](https://github.com/sponsors/Gramps)!
 
 License
 ---
