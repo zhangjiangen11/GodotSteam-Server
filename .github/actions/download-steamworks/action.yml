@@ -37,6 +37,6 @@ runs:
     - name: Copy Steamworks
       shell: bash
       run: |
-        mkdir ./modules/godotsteam/sdk/public
-        cp -r steamworks/public ./modules/godotsteam/sdk
-        cp -r steamworks/redistributable_bin ./modules/godotsteam/sdk
+        mkdir ./modules/godotsteam_server/sdk/public
+        cp -r steamworks/public ./modules/godotsteam_server/sdk
+        cp -r steamworks/redistributable_bin ./modules/godotsteam_server/sdk
