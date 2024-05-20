@@ -5362,7 +5362,5 @@ SteamServer::~SteamServer() {
 	if (is_init_success) {
 		SteamGameServer_Shutdown();
 	}
-
-	// Clear app ID, and singleton variables ////
 	singleton = NULL;
 }
