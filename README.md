@@ -20,8 +20,23 @@ Current Build
 ---
 You can [download pre-compiled versions of this repo here](https://github.com/CoaguCo-Industries/GodotSteam-Server/releases).
 
-**Version 3.3 Changes**
--
+**Version 4.3 Changes**
+- Changed: constants list to add missing and remove unused
+- Changed: Networking Messages, Sockets, and Utils now use Steam IDs instead of identity system
+- Changed: various bits and pieces
+- Changed: IP logic for all related functions
+- Changed: UserUGCListSortOrder enums for readability
+- Changed: UGCContentDescriptorID enums for readability
+- Changed: `getResultStatus()` now returns the integer / enum
+- Changed: `getAuthSessionTicket()` now defaults to 0 for Steam ID
+- Fixed: wrong string IP conversions, ***thanks to jeremybeier***
+- Fixed: typo with UGC_MATCHING_UGC_TYPE_ITEMS enum
+- Fixed: minor case issue with Workshop enums
+- Fixed: typo with NETWORKING_CONFIG_TYPE_STRING enum
+- Removed: unnecessary enums
+- Removed: Networking Types identity system and related bits
+- Removed: P2P Networking constants as they are duplicates of the P2PSend enum
+- Removed: `getIdentity()` as it is redundant now
 
 [You can read more change-logs here](https://godotsteam.com/changelog/server4/).
 
@@ -33,6 +48,12 @@ Steamworks SDK Version | GodotSteam Version
 ---|---|---
 1.59 or newer | 4.2 or newer
 1.58a or older | 4.1 or older
+
+Versions of GodotSteam that have compatibility breaks introduced.
+
+GodotSteam Version | Broken Compatibility
+---|---
+4.3| Networking identity system removed, replaced with Steam IDs
 
 Known Issues
 ---
