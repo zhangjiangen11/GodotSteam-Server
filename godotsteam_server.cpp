@@ -30,7 +30,7 @@ SteamServer::SteamServer():
 	callbackAssociateClan(this, &SteamServer::associate_clan),
 	callbackPlayerCompat(this, &SteamServer::player_compat),
 
-	// Game Server Stat
+	// Game Server Stats
 	callbackStatsStored(this, &SteamServer::stats_stored),
 	callbackStatsUnloaded(this, &SteamServer::stats_unloaded),
 
@@ -475,15 +475,15 @@ Dictionary SteamServer::getAuthSessionTicket(uint64_t remote_steam_id) {
 // Authenticate the ticket from the entity Steam ID to be sure it is valid and isn't reused.
 uint32 SteamServer::beginAuthSession(PackedByteArray ticket, int ticket_size, uint64_t steam_id) {
 	ERR_FAIL_COND_V_MSG(SteamGameServer() == NULL, -1, "[STEAM SERVER] Server class not found when calling: beginAuthSession");
-	CSteamID authSteamID = createSteamID(steam_id);
-	return SteamGameServer()->BeginAuthSession(ticket.ptr(), ticket_size, authSteamID);
+	CSteamID auth_steam_id = createSteamID(steam_id);
+	return SteamGameServer()->BeginAuthSession(ticket.ptr(), ticket_size, auth_steam_id);
 }
 
 // Stop tracking started by beginAuthSession; called when no longer playing game with this entity;
 void SteamServer::endAuthSession(uint64_t steam_id) {
 	ERR_FAIL_COND_MSG(SteamGameServer() == NULL, "[STEAM SERVER] Server class not found when calling: endAuthSession");
-	CSteamID authSteamID = createSteamID(steam_id);
-	SteamGameServer()->EndAuthSession(authSteamID);
+	CSteamID auth_steam_id = createSteamID(steam_id);
+	SteamGameServer()->EndAuthSession(auth_steam_id);
 }
 
 // Cancel auth ticket from getAuthSessionTicket; called when no longer playing game with the entity you gave the ticket to.
@@ -495,16 +495,16 @@ void SteamServer::cancelAuthTicket(uint32_t auth_ticket) {
 // After receiving a user's authentication data, and passing it to sendUserConnectAndAuthenticate, use to determine if user owns DLC
 int SteamServer::userHasLicenceForApp(uint64_t steam_id, uint32 app_id) {
 	ERR_FAIL_COND_V_MSG(SteamGameServer() == NULL, 0, "[STEAM SERVER] Server class not found when calling: userHasLicenceForApp");
-	CSteamID userID = (uint64)steam_id;
-	return SteamGameServer()->UserHasLicenseForApp(userID, (AppId_t)app_id);
+	CSteamID user_id = (uint64)steam_id;
+	return SteamGameServer()->UserHasLicenseForApp(user_id, (AppId_t)app_id);
 }
 
 // Ask if user is in specified group; results returned by GSUserGroupStatus_t.
 bool SteamServer::requestUserGroupStatus(uint64_t steam_id, int group_id) {
 	ERR_FAIL_COND_V_MSG(SteamGameServer() == NULL, false, "[STEAM SERVER] Server class not found when calling: requestUserGroupStatus");
-	CSteamID userID = (uint64)steam_id;
+	CSteamID user_id = (uint64)steam_id;
 	CSteamID clan_id = (uint64)group_id;
-	return SteamGameServer()->RequestUserGroupStatus(userID, clan_id);
+	return SteamGameServer()->RequestUserGroupStatus(user_id, clan_id);
 }
 
 // NOTE: These are in GameSocketShare mode, where instead of ISteamGameServer creating sockets to talk to master server, it lets the game use its socket to forward messages back and forth.
@@ -526,11 +526,11 @@ Dictionary SteamServer::getNextOutgoingPacket() {
 	Dictionary packet;
 	ERR_FAIL_COND_V_MSG(SteamGameServer() == NULL, packet, "[STEAM SERVER] Server class not found when calling: getNextOutgoingPacket");
 	PackedByteArray out;
-	int maxOut = 16 * 1024;
+	int max_out = 16 * 1024;
 	uint32 address;
 	uint16 port;
 	// Retrieve the packet information
-	int length = SteamGameServer()->GetNextOutgoingPacket(&out, maxOut, &address, &port);
+	int length = SteamGameServer()->GetNextOutgoingPacket(&out, max_out, &address, &port);
 	// Place packet information in dictionary and return it
 	packet["length"] = length;
 	packet["out"] = out;
@@ -572,8 +572,8 @@ void SteamServer::associateWithClan(uint64_t clan_id) {
 // Ask if any of the current players dont want to play with this new player - or vice versa.
 void SteamServer::computeNewPlayerCompatibility(uint64_t steam_id) {
 	ERR_FAIL_COND_MSG(SteamGameServer() == NULL, "[STEAM SERVER] Server class not found when calling: computeNewPlayerCompatibility");
-	CSteamID userID = (uint64)steam_id;
-	SteamGameServer()->ComputeNewPlayerCompatibility(userID);
+	CSteamID user_id = (uint64)steam_id;
+	SteamGameServer()->ComputeNewPlayerCompatibility(user_id);
 }
 
 
@@ -582,8 +582,8 @@ void SteamServer::computeNewPlayerCompatibility(uint64_t steam_id) {
 // Resets the unlock status of an achievement for the specified user.
 bool SteamServer::clearUserAchievement(uint64_t steam_id, const String &name) {
 	ERR_FAIL_COND_V_MSG(SteamGameServerStats() == NULL, false, "[STEAM SERVER] Server Stats class not found when calling: clearUserAchievement");
-	CSteamID userID = (uint64)steam_id;
-	return SteamGameServerStats()->ClearUserAchievement(userID, name.utf8().get_data());
+	CSteamID user_id = (uint64)steam_id;
+	return SteamGameServerStats()->ClearUserAchievement(user_id, name.utf8().get_data());
 }
 
 // Gets the unlock status of the Achievement.
@@ -1077,12 +1077,12 @@ Array SteamServer::getResultItems(int32 this_inventory_handle) {
 }
 
 // Find out the status of an asynchronous inventory result handle.
-SteamServer::Result SteamServer::getResultStatus(int32 this_inventory_handle) {
+Result SteamServer::getResultStatus(int32 this_inventory_handle) {
 	ERR_FAIL_COND_V_MSG(SteamInventory() == NULL, RESULT_FAIL, "[STEAM SERVER] Inventory class not found when calling: getResultStatus");
 	if (this_inventory_handle == 0) {
 		this_inventory_handle = inventory_handle;
 	}
-	return (SteamServer::Result)SteamInventory()->GetResultStatus((SteamInventoryResult_t)this_inventory_handle);
+	return (Result)SteamInventory()->GetResultStatus((SteamInventoryResult_t)this_inventory_handle);
 }
 
 // Gets the server time at which the result was generated.
@@ -1113,7 +1113,6 @@ bool SteamServer::loadItemDefinitions() {
 // Removes a dynamic property for the given item.
 bool SteamServer::removeProperty(uint64_t item_id, const String &name, uint64_t this_inventory_update_handle) {
 	ERR_FAIL_COND_V_MSG(SteamInventory() == NULL, false, "[STEAM SERVER] Inventory class not found when calling: removeProperty");
-	// If no inventory update handle is passed, use internal one
 	if (this_inventory_update_handle == 0) {
 		this_inventory_update_handle = inventory_update_handle;
 	}
@@ -1330,7 +1329,7 @@ Dictionary SteamServer::readP2PPacket(uint32_t packet, int channel) {
 
 // Sends a P2P packet to the specified user.
 bool SteamServer::sendP2PPacket(uint64_t remote_steam_id, PackedByteArray data, P2PSend send_type, int channel) {
-	ERR_FAIL_COND_V_MSG(SteamNetworking() == NULL, false, "[STEAM SERVER] Game Server class not found when calling: sendP2PPacket");
+	ERR_FAIL_COND_V_MSG(SteamNetworking() == NULL, false, "[STEAM SERVER] Networking class not found when calling: sendP2PPacket");
 	CSteamID steam_id = createSteamID(remote_steam_id);
 	return SteamNetworking()->SendP2PPacket(steam_id, data.ptr(), data.size(), EP2PSend(send_type), channel);
 }
@@ -1537,34 +1536,35 @@ Dictionary SteamServer::sendMessageToConnection(uint32 connection_handle, const 
 // Send one or more messages without copying the message payload. This is the most efficient way to send messages. To use this
 // function, you must first allocate a message object using ISteamNetworkingUtils::AllocateMessage. (Do not declare one on the
 // stack or allocate your own.)
-Array SteamServer::sendMessages(Array messages, uint32 connection_handle, int flags) {
-	Array result;
-	ERR_FAIL_COND_V_MSG(SteamNetworkingSockets() == NULL, result, "[STEAM SERVER] Networking Sockets class not found when calling: sendMessages");
+// Current does not compile on Windows but does on Linux
+//Array SteamServer::sendMessages(Array messages, uint32 connection_handle, int flags) {
+// 	Array result;
+// 	ERR_FAIL_COND_V_MSG(SteamNetworkingSockets() == NULL, result, "[STEAM SERVER] Networking Sockets class not found when calling: sendMessages");
 
-	int total_messages = messages.size();
-	SteamNetworkingMessage_t *messages_payload[total_messages];
+// 	int total_messages = messages.size();
+// 	SteamNetworkingMessage_t *messages_payload[total_messages];
 
-	for(int m = 0; m < total_messages; m++) {
-		SteamNetworkingMessage_t *network_message = SteamNetworkingUtils()->AllocateMessage(sizeof(messages[m]));
-		network_message->m_pData = messages[m];
-		network_message->m_conn = (HSteamNetConnection)connection_handle;
-		network_message->m_nFlags = flags;
+// 	for(int m = 0; m < total_messages; m++) {
+// 		SteamNetworkingMessage_t *network_message = SteamNetworkingUtils()->AllocateMessage(sizeof(messages[m]));
+// 		network_message->m_pData = messages[m];
+// 		network_message->m_conn = (HSteamNetConnection)connection_handle;
+// 		network_message->m_nFlags = flags;
 
-		messages_payload[m] = network_message;
-		// Can or should we release this here?
-		network_message->Release();
-	}
+// 		messages_payload[m] = network_message;
+// 		// Can or should we release this here?
+// 		network_message->Release();
+// 	}
 
-	int64 *message_num_or_result = new int64[messages.size()];
-	SteamNetworkingSockets()->SendMessages(total_messages, messages_payload, message_num_or_result);
+// 	int64 *message_num_or_result = new int64[messages.size()];
+// 	SteamNetworkingSockets()->SendMessages(total_messages, messages_payload, message_num_or_result);
 
-	for (int i = 0; i < messages.size(); i++ ) {
-		result.append( (int)message_num_or_result[i] );
-	}
+// 	for (int i = 0; i < messages.size(); i++ ) {
+// 		result.append( (int)message_num_or_result[i] );
+// 	}
 
-	delete[] message_num_or_result;
-	return result;
-}
+// 	delete[] message_num_or_result;
+// 	return result;
+// }
 
 // Flush any messages waiting on the Nagle timer and send them at the next transmission opportunity (often that means right now).
 int SteamServer::flushMessagesOnConnection(uint32 connection_handle) {
@@ -1737,14 +1737,15 @@ String SteamServer::getListenSocketAddress(uint32 socket, bool with_port) {
 // Indicate our desire to be ready participate in authenticated communications. If we are currently not ready, then steps will be
 // taken to obtain the necessary certificates. (This includes a certificate for us, as well as any CA certificates needed to
 // authenticate peers.)
-SteamServer::NetworkingAvailability SteamServer::initAuthentication() {
+NetworkingAvailability SteamServer::initAuthentication() {
 	ERR_FAIL_COND_V_MSG(SteamNetworkingSockets() == NULL, NETWORKING_AVAILABILITY_UNKNOWN, "[STEAM SERVER] Networking Sockets class not found when calling: initAuthentication");
 	return NetworkingAvailability(SteamNetworkingSockets()->InitAuthentication());
 }
 
 // Query our readiness to participate in authenticated communications. A SteamNetAuthenticationStatus_t callback is posted any
+
 // time this status changes, but you can use this function to query it at any time.
-SteamServer::NetworkingAvailability SteamServer::getAuthenticationStatus() {
+NetworkingAvailability SteamServer::getAuthenticationStatus() {
 	ERR_FAIL_COND_V_MSG(SteamNetworkingSockets() == NULL, NETWORKING_AVAILABILITY_UNKNOWN, "[STEAM SERVER] Networking Sockets class not found when calling: getAuthenticationStatus");
 	return NetworkingAvailability(SteamNetworkingSockets()->GetAuthenticationStatus(NULL));
 }
@@ -2021,7 +2022,7 @@ void SteamServer::initRelayNetworkAccess() {
 }
 
 // Fetch current status of the relay network.  If you want more details, you can pass a non-NULL value.
-SteamServer::NetworkingAvailability SteamServer::getRelayNetworkStatus() {
+NetworkingAvailability SteamServer::getRelayNetworkStatus() {
 	ERR_FAIL_COND_V_MSG(SteamNetworkingUtils() == NULL, NETWORKING_AVAILABILITY_UNKNOWN, "[STEAM SERVER] Networking Utils class not found when calling: getRelayNetworkStatus");
 	return NetworkingAvailability(SteamNetworkingUtils()->GetRelayNetworkStatus(NULL));
 }
@@ -3102,14 +3103,14 @@ void SteamServer::client_approved(GSClientApprove_t *client_data) {
 // Client has been denied to connection to this game server.
 void SteamServer::client_denied(GSClientDeny_t *client_data) {
 	uint64_t steam_id = client_data->m_SteamID.ConvertToUint64();
-	SteamServer::DenyReason reason = (SteamServer::DenyReason)client_data->m_eDenyReason;
+	DenyReason reason = (DenyReason)client_data->m_eDenyReason;
 	emit_signal("client_denied", steam_id, reason);
 }
 
 // Request the game server should kick the user.
 void SteamServer::client_kick(GSClientKick_t *client_data) {
 	uint64_t steam_id = client_data->m_SteamID.ConvertToUint64();
-	SteamServer::DenyReason reason = (SteamServer::DenyReason)client_data->m_eDenyReason;
+	DenyReason reason = (DenyReason)client_data->m_eDenyReason;
 	emit_signal("client_kick", steam_id, reason);
 }
 
@@ -3131,7 +3132,7 @@ void SteamServer::client_group_status(GSClientGroupStatus_t *client_data) {
 
 // Sent as a reply to AssociateWithClan().
 void SteamServer::associate_clan(AssociateWithClanResult_t *clan_data) {
-	SteamServer::Result result = (SteamServer::Result)clan_data->m_eResult;
+	Result result = (Result)clan_data->m_eResult;
 	emit_signal("associate_clan", result);
 }
 
@@ -3844,7 +3845,7 @@ void SteamServer::_bind_methods() {
 //	ClassDB::bind_method("receivedRelayAuthTicket", &SteamServer::receivedRelayAuthTicket);	<------ Uses datagram relay structs which were removed from base SDK
 	ClassDB::bind_method(D_METHOD("resetIdentity", "remote_steam_id"), &SteamServer::resetIdentity);
 	ClassDB::bind_method("runNetworkingCallbacks", &SteamServer::runNetworkingCallbacks);
-	ClassDB::bind_method(D_METHOD("sendMessages", "data", "connection_handle", "flags"), &SteamServer::sendMessages);
+//	ClassDB::bind_method(D_METHOD("sendMessages", "data", "connection_handle", "flags"), &Steam::sendMessages);		<------ Currently does not compile on Windows but does on Linux
 	ClassDB::bind_method(D_METHOD("sendMessageToConnection", "connection_handle", "data", "flags"), &SteamServer::sendMessageToConnection);
 	ClassDB::bind_method(D_METHOD("setCertificate", "certificate"), &SteamServer::setCertificate);
 	ClassDB::bind_method(D_METHOD("setConnectionPollGroup", "connection_handle", "poll_group"), &SteamServer::setConnectionPollGroup);

@@ -1,4 +1,4 @@
-# GodotSteam Server for Godot Engine 4.x
+# GodotSteam Server for Godot Engine 4.x | Community Edition
 An ecosystem of tools for [Godot Engine](https://godotengine.org) and [Valve's Steam](https://store.steampowered.com). For the Windows, Linux, and Mac platforms.
 
 Additional Flavors
@@ -59,7 +59,7 @@ GodotSteam Version | Broken Compatibility
 Known Issues
 ---
 - Steam overlay will not work when running your game from the editor if you are using Forward+ as the renderer.  It does work with Compatibility though.  Your exported project will work perfectly fine in the Steam client, however.
-- **Using MinGW causes crashes.** I strongly recommend you **do not use MinGW** to compile at this time.
+- When self-compiling, **do not** use MinGW as it will cause crashes.
 
 Quick How-To
 ---
