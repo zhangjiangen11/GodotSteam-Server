@@ -1466,7 +1466,7 @@ uint32 SteamServer::createListenSocketP2P(int virtual_port, Dictionary config_op
 // relayed over the Steam Datagram Relay network.
 uint32 SteamServer::connectP2P(uint64_t remote_steam_id, int virtual_port, Dictionary config_options) {
 	ERR_FAIL_COND_V_MSG(SteamNetworkingSockets() == NULL, 0, "[STEAM SERVER] Networking Sockets class not found when calling: connectP2P");
-	uint32 listen_socket = SteamNetworkingSockets()->ConnectP2P(getIdentityFromSteamID(remote_steam_id), virtual_port, sizeof(options), convert_config_options(config_options));
+	uint32 listen_socket = SteamNetworkingSockets()->ConnectP2P(getIdentityFromSteamID(remote_steam_id), virtual_port, config_options.size(), convert_config_options(config_options));
 	return listen_socket;
 }
 
