@@ -69,7 +69,7 @@ SteamServer::SteamServer():
 	callbackItemInstalled(this, &SteamServer::item_installed),
 	callbackUserSubscribedItemsListChanged(this, &SteamServer::user_subscribed_items_list_changed),
 
-	// Utility
+	// Utils
 	callbackGamepadTextInputDismissed(this, &SteamServer::gamepad_text_input_dismissed),
 	callbackIPCountry(this, &SteamServer::ip_country),
 	callbackLowPower(this, &SteamServer::low_power),
@@ -4447,7 +4447,7 @@ void SteamServer::_bind_methods() {
 	BIND_CONSTANT(INVENTORY_RESULT_INVALID);
 	BIND_CONSTANT(ITEM_INSTANCE_ID_INVALID);
 
-	// NETWORKING
+	// NETWORKING SOCKET
 	BIND_CONSTANT(MAX_STEAM_PACKET_SIZE);
 
 	// NETWORKING TYPES
